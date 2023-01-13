@@ -16,9 +16,6 @@
 """Tools for interfacing with the ISODISTORT web server.
 """
 
-# package version
-from pydistort.version import __version__
-
 import pydistort.isoreader
 # convenience imports
 #from diffpy.mpdf.magstructure import *
