@@ -16,8 +16,6 @@
 """Tools for interfacing with the ISODISTORT web server.
 """
 
-import pydistort.isoreader
-# convenience imports
-#from diffpy.mpdf.magstructure import *
+import pydistort.isoget
 
 # End of file

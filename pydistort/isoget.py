@@ -143,7 +143,7 @@ def _postDisplayDistort(data,fname):
     out = requests.post(ISO_FORM_SITE,data=data)
     open(fname,'wb').write(out.text.encode('utf-8'))
 
-def getIsodistort(cifname,outfname,var_dict={}):
+def get(cifname,outfname,var_dict={}):
     """
     Interacts with the Isodistort website to get the available distortion modes. It is set to use Method 3 
     and assumes P1 symmetry by default.
