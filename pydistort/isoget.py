@@ -102,7 +102,22 @@ def _postIsoSubGroup(data):
 
     return data
 
-def _postDistort(data):
+def _postDistort(data, format):
+    """
+    Other formats to add:
+    isovizdistortion
+    isovizdiffraction
+    structurefile (cif)
+    distortionfile
+    domains
+    primary
+    modesdetails
+    completemodesdetails
+    topas (this is the one currently being used)
+    fullprof
+    irreps
+    tree
+    """
     out = requests.post(ISO_FORM_SITE,data=data)
 
     data = {}
@@ -136,14 +151,14 @@ def _postDistort(data):
         if b'</FORM>' in line:
             break
 
-    data['origintype'] = 'topas'
+    data['origintype'] = format
     return data
 
 def _postDisplayDistort(data,fname):
     out = requests.post(ISO_FORM_SITE,data=data)
     open(fname,'wb').write(out.text.encode('utf-8'))
 
-def get(cifname,outfname,var_dict={}):
+def get(cifname,outfname,var_dict={},format='topas'):
     """
     Interacts with the Isodistort website to get the available distortion modes. It is set to use Method 3 
     and assumes P1 symmetry by default.
@@ -161,5 +176,5 @@ def get(cifname,outfname,var_dict={}):
     parentcif = _uploadCIF(cifname)
     data = _postParentCIF(parentcif,var_dict)
     data = _postIsoSubGroup(data)
-    data = _postDistort(data)
+    data = _postDistort(data, format)
     _postDisplayDistort(data,outfname)
