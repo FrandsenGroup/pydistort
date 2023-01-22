@@ -23,6 +23,8 @@ ISO_UPLOAD_SITE = "https://iso.byu.edu/iso/isodistortuploadfile.php"
 ISO_FORM_SITE = "https://iso.byu.edu/iso/isodistortform.php"
 
 def _uploadCIF(cifname):
+    """Upload CIF file to ISODISTORT.
+    """
     ciffile = open(cifname,'rb')
     up = {'toProcess':(cifname,ciffile),}
     out = requests.post(ISO_UPLOAD_SITE,files=up).text
@@ -36,6 +38,8 @@ def _uploadCIF(cifname):
     return filename
 
 def _postParentCIF(fname,var_dict):
+    """Run "Method 3" on the parent structure.
+    """
     up = {'filename':fname,'input':'uploadparentcif'}
     out = requests.post(ISO_FORM_SITE,up)
 
@@ -74,6 +78,10 @@ def _postParentCIF(fname,var_dict):
     return data
 
 def _postIsoSubGroup(data):
+    """Select the distortion mode.
+    
+    Note: this is only guaranteed to be functional for P1 subgroup symmetry.
+    """
     out = requests.post(ISO_FORM_SITE,data=data)
     data = {}
     line_iter = out.iter_lines()
@@ -103,20 +111,7 @@ def _postIsoSubGroup(data):
     return data
 
 def _postDistort(data, format):
-    """
-    Other formats to add:
-    isovizdistortion
-    isovizdiffraction
-    structurefile (cif)
-    distortionfile
-    domains
-    primary
-    modesdetails
-    completemodesdetails
-    topas (this is the one currently being used)
-    fullprof
-    irreps
-    tree
+    """Prepare the data for downloading.
     """
     out = requests.post(ISO_FORM_SITE,data=data)
 
@@ -155,6 +150,8 @@ def _postDistort(data, format):
     return data
 
 def _postDisplayDistort(data,fname):
+    """Download the ISODISTORT output.
+    """
     out = requests.post(ISO_FORM_SITE,data=data)
     open(fname,'wb').write(out.text.encode('utf-8'))
 
@@ -171,10 +168,74 @@ def get(cifname,outfname,var_dict={},format='topas'):
         var_dict: dict
             Variables to pass to Method 3 in ISODISTORT to setup the symmetry, lattice, and basis.
             Defaults to P1 symmetry and a identity matrix for the basis.
+            Keys and default values are:
+                'subgroupsym' = '1 P1 C1-1'
+                'pointgroupsym' = '0'
+                'latticetype' = 'direct'
+                'centering' = 'd' (for default)
+                'basis11' = '1'
+                'basis12' = '0'
+                'basis13' = '0'
+                'basis21' = '0'
+                'basis22' = '1'
+                'basis23' = '0'
+                'basis31' = '0'
+                'basis32' = '0'
+                'basis33' = '1'
+            Note that the 'subgroupsym' value can simply be the space group
+            number (as a string) for the desired subgroup. It is not
+            recommended to use the space group symbol alone, since this is
+            not always read correctly.
+        format: str
+            Format of the output file requested from the ISODISTORT server.
+            Allowed values are:
+                'isovizdistortion'
+                'isovizdiffraction'
+                'structurefile'
+                'distortionfile'
+                'domains'
+                'primary'
+                'modesdetails'
+                'completemodesdetails'
+                'topas'
+                'fullprof'
+                'irreps'
+                'tree'
+            See https://stokes.byu.edu/iso/isodistorthelp.php#savedist for
+            information about each format. 
     """
-
-    parentcif = _uploadCIF(cifname)
-    data = _postParentCIF(parentcif,var_dict)
-    data = _postIsoSubGroup(data)
-    data = _postDistort(data, format)
-    _postDisplayDistort(data,outfname)
+    ### check that the format is acceptable
+    formatlist = ['isovizdistortion',
+                  'isovizdiffraction',
+                  'structurefile',
+                  'distortionfile',
+                  'domains',
+                  'primary',
+                  'modesdetails',
+                  'completemodesdetails',
+                  'topas',
+                  'fullprof',
+                  'irreps',
+                  'tree']
+    
+    if format not in formatlist:
+        print('This is not a valid format. Acceptable options are:\n')
+        print('isovizdistortion')
+        print('isovizdiffraction')
+        print('structurefile')
+        print('distortionfile')
+        print('domains')
+        print('primary')
+        print('modesdetails')
+        print('completemodesdetails')
+        print('topas')
+        print('fullprof')
+        print('irreps')
+        print('tree\n')
+        print('Please try again with one of these formats.')
+    else:    
+        parentcif = _uploadCIF(cifname)
+        data = _postParentCIF(parentcif,var_dict)
+        data = _postIsoSubGroup(data)
+        data = _postDistort(data, format)
+        _postDisplayDistort(data,outfname)
