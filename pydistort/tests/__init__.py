@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# diffpy.mpdf       by Billinge Group
-#                     Simon J. L. Billinge sb2896@columbia.edu
-#                     (c) 2016 trustees of Columbia University in the City of
-#                           New York.
+# diffpy.mpdf         by Frandsen Group
+#                     Benjamin A. Frandsen benfrandsen@byu.edu
+#                     (c) 2022 Benjamin Allen Frandsen
 #                      All rights reserved
 #
 # File coded by:    Benjamin Frandsen
@@ -27,12 +26,12 @@ del logging
 
 
 def testsuite():
-    '''Build a unit tests suite for the diffpy.mpdf package.
+    '''Build a unit tests suite for the pydistort package.
     Return a unittest.TestSuite object.
     '''
     import unittest
     modulenames = '''
-        pydistort.tests.testtest
+        pydistort.tests.tests
     '''.split()
     suite = unittest.TestSuite()
     loader = unittest.defaultTestLoader
@@ -44,7 +43,7 @@ def testsuite():
 
 
 def test():
-    '''Execute all unit tests for the diffpy.mpdf package.
+    '''Execute all unit tests for the pydistort package.
     Return a unittest TestResult object.
     '''
     import unittest

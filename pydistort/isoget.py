@@ -28,7 +28,7 @@ def _uploadCIF(cifname):
     ciffile = open(cifname,'rb')
     up = {'toProcess':(cifname,ciffile),}
     out = requests.post(ISO_UPLOAD_SITE,files=up).text
-    ciffile.close
+    ciffile.close()
 
     start = out.index("VALUE=")
     start = out.index('"',start+1)+1
@@ -153,12 +153,13 @@ def _postDisplayDistort(data,fname):
     """Download the ISODISTORT output.
     """
     out = requests.post(ISO_FORM_SITE,data=data)
-    open(fname,'wb').write(out.text.encode('utf-8'))
+    f = open(fname,'wb')
+    f.write(out.text.encode('utf-8'))
+    f.close()
 
 def get(cifname,outfname,var_dict={},format='topas'):
-    """
-    Interacts with the Isodistort website to get the available distortion modes. It is set to use Method 3 
-    and assumes P1 symmetry by default.
+    """Interacts with the Isodistort website to get the available distortion
+    modes. Uses ISODISTORT "Method 3 " and assumes P1 symmetry by default.
 
     params:
         cifname: str
