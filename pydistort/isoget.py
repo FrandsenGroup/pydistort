@@ -22,25 +22,25 @@ import requests
 ISO_UPLOAD_SITE = "https://iso.byu.edu/iso/isodistortuploadfile.php"
 ISO_FORM_SITE = "https://iso.byu.edu/iso/isodistortform.php"
 
-def _uploadCIF(cifname):
-    """Upload CIF file to ISODISTORT.
+def _uploadCIF(cif):
+    """Upload CIF to ISODISTORT.
     """
-    ciffile = open(cifname,'rb')
-    up = {'toProcess':(cifname,ciffile),}
+    f = open(cif,'rb')
+    up = {'toProcess':(cif,f),}
     out = requests.post(ISO_UPLOAD_SITE,files=up).text
-    ciffile.close()
+    f.close()
 
     start = out.index("VALUE=")
     start = out.index('"',start+1)+1
     end = out.index('"',start)
-    filename = out[start:end]
+    fname = out[start:end]
 
-    return filename
+    return fname
 
 def _postParentCIF(fname,var_dict):
     """Run "Method 3" on the parent structure.
     """
-    up = {'filename':fname,'input':'uploadparentcif'}
+    up = {'filename':fname, 'input':'uploadparentcif'}
     out = requests.post(ISO_FORM_SITE,up)
 
     data = {}
