@@ -10,9 +10,11 @@
 #
 # See AUTHORS.txt for a list of people who contributed.
 # See LICENSE.txt for license information.
-#
+# We acknowledge Brian Toby and Robert Von Dreele as the first to develop a
+# python interface to ISODISTORT, which served as a valuable starting point
+# for this package. Their work can be found as part of the GSAS-II software at
+# https://subversion.xray.aps.anl.gov/trac/pyGSAS/browser/trunk/ISODISTORT.py 
 ##############################################################################
-
 
 """Tools to interface with ISODISTORT"""
 
