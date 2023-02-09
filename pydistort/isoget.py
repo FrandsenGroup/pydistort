@@ -79,10 +79,8 @@ def _postParentCIF(fname,var_dict):
 
     return data
 
-def _postIsoSubGroup(data):
+def _postIsoSubGroup(data, selection):
     """Select the distortion mode.
-    
-    Note: this is only guaranteed to be functional for P1 subgroup symmetry.
     """
     out = requests.post(ISO_FORM_SITE,data=data)
     data = {}
@@ -99,13 +97,19 @@ def _postIsoSubGroup(data):
 
             val = items[3].split('=',1)[1].strip('>"')
             data[name] = val
+        if b'<br>' in line:
+            break
 
-        if b'RADIO' in line and b'CHECKED' in line:
-            items = line.decode('utf-8').split(' ',3)
-            name = items[2].split('=')[1].strip('"')
+    counter = 0 # keep track of which distortion we are on
+    for line in line_iter:
+        if b'RADIO' in line:
+            counter += 1
+            if counter == selection: # grab data just for the one we want
+                items = line.decode('utf-8').split(' ',3)
+                name = items[2].split('=')[1].strip('"')
 
-            val = items[3].split('=',1)[1].strip('>"')
-            data[name] = val
+                val = items[3].split('=',1)[1].strip('>"')
+                data[name] = val
 
         if b'</FORM>' in line:
             break
@@ -159,7 +163,7 @@ def _postDisplayDistort(data,fname):
     f.write(out.text.encode('utf-8'))
     f.close()
 
-def get(cifname,outfname,var_dict={},format='topas'):
+def get(cifname,outfname,var_dict={},format='topas',selection=1):
     """Interacts with the Isodistort website to get the available distortion
     modes. Uses ISODISTORT "Method 3 " and assumes P1 symmetry by default.
 
@@ -206,6 +210,11 @@ def get(cifname,outfname,var_dict={},format='topas'):
                 'tree'
             See https://stokes.byu.edu/iso/isodistorthelp.php#savedist for
             information about each format. 
+        selection: int
+            The number of the desired distortion from the list of possible
+            distortions provided by ISODISTORT, starting from 1 at the top
+            and increasing as you move downward through the list. Default
+            value is 1.
     """
     ### check that the format is acceptable
     formatlist = ['isovizdistortion',
@@ -238,7 +247,7 @@ def get(cifname,outfname,var_dict={},format='topas'):
         print('Please try again with one of these formats.')
     else:    
         parentcif = _uploadCIF(cifname)
-        data = _postParentCIF(parentcif,var_dict)
-        data = _postIsoSubGroup(data)
+        data = _postParentCIF(parentcif, var_dict)
+        data = _postIsoSubGroup(data, selection)
         data = _postDistort(data, format)
         _postDisplayDistort(data,outfname)
