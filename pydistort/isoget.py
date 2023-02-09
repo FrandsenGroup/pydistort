@@ -167,15 +167,14 @@ def get(cifname,outfname,var_dict={},format='topas',selection=1):
     """Interacts with the Isodistort website to get the available distortion
     modes. Uses ISODISTORT "Method 3 " and assumes P1 symmetry by default.
 
-    params:
-        cifname: str
-            The name of the local cif file you want to use
-        outfname: str
-            The name of the file where you want the distortion modes saved, should be a ,str file
-        var_dict: dict
-            Variables to pass to Method 3 in ISODISTORT to setup the symmetry, lattice, and basis.
-            Defaults to P1 symmetry and a identity matrix for the basis.
-            Keys and default values are:
+    Args:
+        cifname (str): The name of the local cif file you want to use.
+        outfname (str): The name of the file where you want the ISODISTORT
+            output saved.
+        var_dict (dict): Variables to pass to Method 3 in ISODISTORT to set
+            up the subgroup symmetry, lattice, and basis. Defaults to P1
+            symmetry and an identity matrix for the basis. Keys and default
+            values are:
                 'subgroupsym' = '1 P1 C1-1'
                 'pointgroupsym' = '0'
                 'latticetype' = 'direct'
@@ -193,9 +192,8 @@ def get(cifname,outfname,var_dict={},format='topas',selection=1):
             number (as a string) for the desired subgroup. It is not
             recommended to use the space group symbol alone, since this is
             not always read correctly.
-        format: str
-            Format of the output file requested from the ISODISTORT server.
-            Allowed values are:
+        format (str): Format of the output file requested from the ISODISTORT
+            server. Allowed values are:
                 'isovizdistortion'
                 'isovizdiffraction'
                 'structurefile'
@@ -210,11 +208,10 @@ def get(cifname,outfname,var_dict={},format='topas',selection=1):
                 'tree'
             See https://stokes.byu.edu/iso/isodistorthelp.php#savedist for
             information about each format. 
-        selection: int
-            The number of the desired distortion from the list of possible
-            distortions provided by ISODISTORT, starting from 1 at the top
-            and increasing as you move downward through the list. Default
-            value is 1.
+        selection (int): The number of the desired distortion from the list
+            of possible distortions provided by ISODISTORT, starting from 1
+            at the top and increasing as you move downward through the list.
+            Default value is 1.
     """
     ### check that the format is acceptable
     formatlist = ['isovizdistortion',
